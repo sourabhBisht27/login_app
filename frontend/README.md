@@ -1,16 +1,171 @@
-# React + Vite
+# Login App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack login application built with **React + Vite** (frontend) and **Node.js + Express** (backend). Supports credential validation, protected routes, and persistent username memory via localStorage.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## React Compiler
+| Layer       | Technology                                    |
+| ----------- | --------------------------------------------- |
+| Frontend    | React 18, Vite, React Router v6, Tailwind CSS |
+| Backend     | Node.js, Express                              |
+| Environment | dotenv                                        |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+login-app/
+├── backend/
+│   ├── controllers/
+│   │   └── authController.js     # Login logic
+│   ├── middleware/
+│   │   └── validation.js         # Input validation
+│   ├── routes/
+│   │   └── auth.js               # POST /api/login route
+│   ├── .env                      # Environment variables
+│   ├── server.js                 # Express server entry point
+│   └── package.json
+│
+└── frontend/
+    ├── public/
+    ├── src/
+    │   ├── api/
+    │   │   └── authApi.js         # Fetch API calls
+    │   ├── components/
+    │   │   └── ProtectedRoute.jsx # Guards authenticated routes
+    │   ├── hooks/
+    │   │   └── useAuth.js         # Login/logout/session logic
+    │   ├── pages/
+    │   │   ├── LoginPage.jsx
+    │   │   └── WelcomePage.jsx
+    │   ├── App.jsx                # Route definitions
+    │   ├── main.jsx               # React entry point
+    │   └── index.css              # Tailwind directives
+    ├── .env                       # Vite environment variables
+    ├── vite.config.js             # Vite + proxy config
+    └── package.json
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js v18+
+- npm v9+
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/sourabhBisht27/login_app.git
+cd login_app
+```
+
+### 2. Setup & run the Backend
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+Backend runs on `http://localhost:5000`
+
+### 3. Setup & run the Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend runs on `http://localhost:3000`
+
+---
+
+## Environment Variables
+
+### `backend/.env`
+
+```
+PORT=5000
+CLIENT_URL=http://localhost:3000
+```
+
+### `frontend/.env`
+
+```
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+---
+
+## API Reference
+
+### `POST /api/login`
+
+**Request Body**
+
+```json
+{
+  "username": "admin",
+  "password": "admin"
+}
+```
+
+**Success Response — 200**
+
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "user": {
+    "username": "admin",
+    "role": "admin",
+    "loginTime": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+**Invalid Credentials — 401**
+
+```json
+{
+  "success": false,
+  "message": "Invalid username or password. Please try again."
+}
+```
+
+**Missing Fields — 400**
+
+```json
+{
+  "success": false,
+  "message": "Username is required."
+}
+```
+
+---
+
+## Features
+
+- Login form with client-side and server-side validation
+- Correct credentials (`admin` / `admin`) redirect to a Welcome page
+- Wrong credentials display an error message
+- Remember username across sessions via localStorage
+- Protected `/welcome` route — redirects to `/login` if not authenticated
+- Loading spinner during API call
+- Clean logout that clears the session
+
+---
+
+## Test Credentials
+
+```
+Username: admin
+Password: admin
+```
