@@ -7,7 +7,26 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 
-app.use(cors({ origin: CLIENT_URL, credentials: true }));
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true; // allow non-browser requests like curl/Postman
+  if (origin === "http://localhost:3000") return true;
+  if (origin.endsWith(".vercel.app")) return true;
+  return false;
+};
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (isAllowedOrigin(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 app.use("/api", authRoutes);
